@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Space Grotesk";
+  user-select: none;
+}
+
+.scroll[data-scroll="false"]::-webkit-scrollbar {
+  display: none;
+}
