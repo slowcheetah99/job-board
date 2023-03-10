@@ -1,6 +1,5 @@
 import { createContext, useReducer } from "react";
 const initialState = {
-  jobs: [],
   user: {},
   loading: true,
   data: {
@@ -22,7 +21,6 @@ export function JobProvider({ children }) {
         return {
           ...state,
           loading: false,
-          jobs: action.payload,
         };
 
       case "SET_JOBS":

@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { initFirebase } from "../firebase";
 import { signInWithEmailAndPassword as signUserIn } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 export default function SignIn() {
   const { auth } = initFirebase();
+  const navigate = useNavigate();
   const loginSchema = object({
     email: string()
       .email("Please enter a valid email address")
@@ -38,7 +40,11 @@ export default function SignIn() {
   async function onSubmit(values) {
     const { email, password } = values;
     try {
-      await signUserIn(auth, email, password);
+      const success = await signUserIn(auth, email, password);
+      if (success.user.uid) {
+        localStorage.setItem("AUTH_USER", JSON.stringify(success.user));
+        return navigate("/");
+      }
     } catch (err) {
       console.log(err.message);
     }

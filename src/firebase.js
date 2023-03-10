@@ -30,7 +30,7 @@ export function initFirebase() {
     if (!user) return;
     const userDoc = doc(firestore, `Users/${user.uid}`);
     const { username, type, image, bio } = userInfo;
-    const { displayName, email, photoURL } = user;
+    const { email, photoURL } = user;
     const createdAt = new Date();
     try {
       setDoc(userDoc, {

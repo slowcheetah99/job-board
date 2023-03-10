@@ -1,12 +1,15 @@
 import { string, object, ref } from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { initFirebase } from "../firebase";
 import { createUserWithEmailAndPassword as createUser } from "firebase/auth";
 import { useEffect } from "react";
-import { setDoc, doc, onSnapshot, getDoc } from "firebase/firestore";
-export default function SignUp({ user, setUser, data, setData }) {
+import { useAuth } from "../hooks/useAuth";
+import { Navigate } from "react-router-dom";
+export default function SignUp() {
+  const { data, setData } = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
     setData({
       username: "",
@@ -18,7 +21,7 @@ export default function SignUp({ user, setUser, data, setData }) {
       confirmPassword: "",
     });
   }, []);
-  const { auth, firestore, createUserProfile } = initFirebase();
+  const { auth, createUserProfile } = initFirebase();
   const signUpSchema = object({
     username: string().required("Please enter your username"),
     email: string()
@@ -33,7 +36,7 @@ export default function SignUp({ user, setUser, data, setData }) {
       .oneOf([ref("password"), null], "Passwords do not match"),
   });
 
-  const initialValues = { ...data };
+  const initialValues = data;
 
   const renderError = (msg) => (
     <motion.p
@@ -54,11 +57,12 @@ export default function SignUp({ user, setUser, data, setData }) {
 
   async function onSubmit(values) {
     const { email, password, username, type, image, bio } = values;
-    setData({ ...values });
+    setData(values);
 
     try {
       const res = await createUser(auth, email, password);
-      createUserProfile(res.user, ...data);
+      createUserProfile(res.user, data);
+      navigate("/");
       setData({
         username: "",
         type: "",

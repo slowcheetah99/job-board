@@ -18,6 +18,7 @@ export default function Nav() {
   const { auth } = initFirebase();
   function handleLogout() {
     auth.signOut();
+    localStorage.removeItem("AUTH_USER");
   }
 
   return (

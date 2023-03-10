@@ -4,25 +4,19 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { useJobContext } from "../../hooks/useJobContext";
 import { spreadDocs } from "../../utils";
-const tags = [
-  "User Interface Design",
-  "Figma",
-  "Wireframing",
-  "User Experience",
-  "Prototyping",
-];
-export default function Main() {
+export default function Main({ jobs, setJobs }) {
   const [open, setOpen] = useState(false);
   const [activeJob, setActiveJob] = useState({});
 
   const { firestore } = initFirebase();
-  const { dispatch, jobs, loading } = useJobContext();
+  const { dispatch, loading } = useJobContext();
 
   useLayoutEffect(() => {
     const jobSnapshots = collection(firestore, "Jobs");
     const unsubscribe = onSnapshot(jobSnapshots, (snapshot) => {
       const res = snapshot.docs.map(spreadDocs);
       if (res.length > 0) {
+        setJobs(res);
         dispatch({
           type: "GET_JOBS",
           payload: res,
@@ -65,7 +59,6 @@ export default function Main() {
               key={i}
               onClick={() => handleClick(job)}
             >
-              {console.log(jobs)}
               <motion.div
                 className="content__header flex items-center gap-x-6 mb-4"
                 initial={{
